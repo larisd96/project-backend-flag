@@ -1,8 +1,15 @@
-const express = require('express');
-const app = express()
+const service = require("../../services/shop-list.service")
 
-app.get('/shop-list', (req, res) => {
+exports.getAllItems = async (req, res) => {
+    try {
+        const result = await service.getAllItemsService()
+        res.status(200).send(result)
+    } catch {
+        res.status(500).send("request falhou");
+    }
 
-res.send([])
 
-})
+
+}
+
+
