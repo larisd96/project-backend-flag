@@ -14,7 +14,7 @@ exports.getAllItems = async (req, res) => {
 exports.createShopList = async(req, res) => {
 try {
     await service.createShopListService(req.body);
-    send.status(200).send("Shop List created!");
+    res.status(201).send("Shop List created!");
 } catch(error) {
     console.error("Error occurred during shop list create", error.message)
     res.status(500).send(error.message);
@@ -35,7 +35,8 @@ exports.updateShopList = async (req, res) => {
 }
 exports.deleteShopList = async (req, res) => {
     try {
-        await service.updateShopListService(req,params.id);
+        await service.deleteShopListService(req.params.id);
+        res.status(204)
     } catch (error) {
         console.error("Error occurred during delete shop list", error.message);
         res.status(500).send(error.message);

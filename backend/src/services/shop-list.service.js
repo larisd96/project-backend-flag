@@ -1,3 +1,4 @@
+const { updateShopList } = require("../controllers/shop-list/shop-list.controller");
 const shopListRepository = require("../repository/shop-list.repository");
 
 exports.getAllItemsService = async () => {
@@ -20,8 +21,9 @@ exports.createShopListService = async (shopList) => {
 
 exports.updateShopListService = async (shopListId, shopList) => {
     try {
-        const shopListUpdate = await shopListRepository.updateShopListRepository(shopListId, shopList);
-        return shopListUpdate;
+        const result = await shopListRepository.updateShopListRepository(shopListId, shopList);
+        return result
+   
     } catch (error) {
         throw new Error("Error");
     }

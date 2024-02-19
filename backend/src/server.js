@@ -1,6 +1,6 @@
 const express = require("express");
 const { testConnection } = require("./config/data-base.config");
-const shopList = require("./routes/shopList.route");
+const shopList = require("./routes/shop-list.route");
 const app = express();
 const port = 8080;
 
