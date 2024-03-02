@@ -22,7 +22,10 @@ exports.createShopListService = async (shopList) => {
 exports.updateShopListService = async (shopListId, shopList) => {
     try {
         const result = await shopListRepository.updateShopListRepository(shopListId, shopList);
-        return result
+        if(result) {
+            const shopList = await shopListRepository.getItem(shopListId)
+            return shopList
+        }
    
     } catch (error) {
         throw new Error("Error");

@@ -2,6 +2,11 @@ const { DataTypes } = require("sequelize");
 const { dbConfig } = require("../config/data-base.config");
 
 const shopListModel = dbConfig.define("shoplists", {
+  id: {
+    type: DataTypes.UUID,
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4,
+  },
   title: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -10,9 +15,10 @@ const shopListModel = dbConfig.define("shoplists", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  items: {
-    type: DataTypes.JSON,
-    allowNull: true,
+  status: {
+    type: DataTypes.ENUM('IN_PROGRESS', 'COMPLETE'),
+    defaultValue: 'IN_PROGRESS',
+    allowNull: null,
   },
   created_at: {
     type: DataTypes.DATEONLY,

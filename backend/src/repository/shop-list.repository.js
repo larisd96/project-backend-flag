@@ -1,13 +1,20 @@
 const { dbConfig } = require("../config/data-base.config");
-const { shopListModel } = require("../model/shop-list.model");
+const {
+  shopListModel,
+  shopListItemModel,
+} = require("../model/shop-list.model");
 
 exports.getAllItemsRepository = async () => {
   try {
     await dbConfig.sync();
-    const result = await shopListModel.findAll(); 
-   
+    const result = await shopListModel.findAll({
+      include: "shopListItem",
+    });
+
     return result;
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
 exports.getItem = async (shopListId) => {
@@ -17,56 +24,120 @@ exports.getItem = async (shopListId) => {
       where: {
         id: shopListId,
       },
-    }); 
-return result;
-  } catch (error){
-    throw error 
+      include: "shopListItem",
+    });
+    return result;
+  } catch (error) {
+    throw error;
   }
 };
 
-exports.createShopListRepository = async (shopList) => { 
+exports.createShopListRepository = async (shopList) => {
+  const transaction = await dbConfig.transaction();
+
   try {
     await dbConfig.sync();
-    await shopListModel.create(shopList);
+    const { id } = await shopListModel.create(
+      {
+        title: shopList.title,
+        description: shopList.description,
+      },
+      transaction
+    );
+    await shopListItemModel.bulkCreate(
+      shopList.shopListItems.map((item) => ({
+        ...item,
+        shopListId: id,
+      })),
+      { transaction }
+    );
+    await transaction.commit();
   } catch (error) {
-    console.error(error);
-   }
+    await transaction.rollback();
+    throw error;
+  }
 };
 
-
 exports.updateShopListRepository = async (shopListId, shopListUpdate) => {
+  const transaction = await dbConfig.transaction();
+
   try {
     await dbConfig.sync();
-    await shopListModel.update(
-      shopListUpdate,
+    let updatedShopListItemCount;
+    const [updatedShopListCount] = await shopListModel.update(
+      {
+        title: shopListUpdate.title,
+        description: shopListUpdate.description,
+        status: shopListUpdate.status,
+      },
       {
         where: {
           id: shopListId,
         },
+        transaction,
       }
     );
 
-    const result = await shopListModel.findOne({
-      where: {
-        id: shopListId,
-      },
-    });
+    if (shopListUpdate?.shopListItems?.length) {
+      for (const shopListItem of shopListUpdate.shopListItem) {
+        [updatedShopListItemCount] = await shopListItemModel.update(
+          {
+            title: shopListItem.title,
+            quantity: shopListItem.quantity,
+          },
+          {
+            where: {
+              id: shopListItem.id,
+              shopListId: shopListId,
+            },
+            transaction,
+          }
+        );
+      }
+    }
 
-    return result;
+    if (updatedShopListCount === 0 && updatedShopListItemCount === 0) {
+      throw new Error("Nothing to update");
+    }
+
+    await transaction.commit();
+    return {
+      sucess: true,
+    };
   } catch (error) {
-    console.error(error);
-}
+    await transaction.rollback();
+    throw error;
+  }
 };
 
 exports.deleteShopListRepository = async (shopListId) => {
+  const transaction = await dbConfig.transaction();
+
   try {
     await dbConfig.sync();
-    await shopListModel.destroy({
+    await shopListItemModel.destroy({
       where: {
         id: shopListId,
       },
+      transaction,
     });
+
+    const deletedShopListCount = await shopListItemModel.destroy({
+      where: {
+        id: shopListId,
+      },
+      transaction,
+    });
+
+    if (deletedShopListCount === 0) {
+      throw new Error("Shop List Not Found");
+    }
+    await transaction.commit();
+    return {
+      sucess: true,
+    };
   } catch (error) {
-    console.error(error);
+    await transaction.rollback();
+    throw error;
   }
 };
