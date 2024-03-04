@@ -1,4 +1,3 @@
-const { updateShopList } = require("../controllers/shop-list/shop-list.controller");
 const shopListRepository = require("../repository/shop-list.repository");
 
 exports.getAllItemsService = async () => {
@@ -6,7 +5,8 @@ exports.getAllItemsService = async () => {
         const result = await shopListRepository.getAllItemsRepository();
         return result;
     } catch (error) {
-        throw new Error("Error");
+        console.error("Error when get all shop lists", error)
+        throw new Error("Error on get all shop lists");
     }
 };
 
@@ -15,7 +15,9 @@ exports.getItemsService = async (shopListId) => {
         const result = await shopListRepository.getItem(shopListId);
         return result;
     } catch (error) {
-        throw new Error("Error");
+        console.error("Error when get shop list", error)
+
+        throw new Error("Error on get shop list");
     }
 };
 
@@ -23,8 +25,8 @@ exports.createShopListService = async (shopList) => {
     try {
         await shopListRepository.createShopListRepository(shopList);
     } catch (error) {
-        console.log(error);
-        throw new Error("Error");
+        console.log("Error when create shop list", error);
+        throw new Error("Error on create shop list");
     }
 };
 
@@ -37,8 +39,8 @@ exports.updateShopListService = async (shopListId, shopList) => {
         }
    
     } catch (error) {
-        console.error("Error on update: ", error)
-        throw new Error("Error");
+        console.error("Error when update ", error)
+        throw new Error("Error on update shop list");
     }
 };
 
@@ -47,6 +49,6 @@ exports.deleteShopListService = async (shopListId) => {
         await shopListRepository.deleteShopListRepository(shopListId);
     } catch (error) {
         console.error("Error when deleting a shop list: ", error)
-        throw new Error("Error");
+        throw new Error("Error on delete shop list");
     }
 };
