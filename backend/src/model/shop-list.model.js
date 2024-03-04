@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { dbConfig } = require("../config/data-base.config");
 
-const shopListModel = dbConfig.define("shoplists", {
+const shopListModel = dbConfig.define("shopLists", {
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
@@ -16,8 +16,8 @@ const shopListModel = dbConfig.define("shoplists", {
     allowNull: false,
   },
   status: {
-    type: DataTypes.ENUM('IN_PROGRESS', 'COMPLETE'),
-    defaultValue: 'IN_PROGRESS',
+    type: DataTypes.ENUM("IN_PROGRESS", "COMPLETE"),
+    defaultValue: "IN_PROGRESS",
     allowNull: null,
   },
   created_at: {
@@ -30,41 +30,41 @@ const shopListModel = dbConfig.define("shoplists", {
   },
 });
 
-const shopListItemModel = dbConfig.define('shoplistitems', {
+const shopListItemModel = dbConfig.define("shopListItems", {
+  id: {
+    type: DataTypes.UUID,
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4,
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 
-id: {
-  type:DataTypes.UUID,
-  primaryKey:true,
-  defaultValue: DataTypes.UUIDV4
-}, 
-title: {
-  type: DataTypes.STRING,
-  allowNull: false,
-},
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  shopListId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: shopListModel,
+      key: "id",
+    },
+  },
+});
 
-quantity:{
-  type: DataTypes.INTEGER,
-  allowNull: false,
-},
-shopListId:{
-type: DataTypes.UUID,
-allowNull: false, 
-references:{
-  model: shopListModel,
-  key: 'id',
-}
-}
-})
-
-shopListModel.hasMany(shopListItemModel,{
-  as:'shopListItem', foreignKey: 'shopListId'
+shopListModel.hasMany(shopListItemModel, {
+  as: "shopListItems",
+  foreignKey: "shopListId",
 });
 
 shopListItemModel.belongsTo(shopListModel, {
-  foreignKey: 'shopListId'
-})
+  foreignKey: "shopListId",
+});
 
 module.exports = {
   shopListModel,
-  shopListItemModel
-}
+  shopListItemModel,
+};

@@ -10,6 +10,15 @@ exports.getAllItemsService = async () => {
     }
 };
 
+exports.getItemsService = async (shopListId) => {
+    try {
+        const result = await shopListRepository.getItem(shopListId);
+        return result;
+    } catch (error) {
+        throw new Error("Error");
+    }
+};
+
 exports.createShopListService = async (shopList) => {
     try {
         await shopListRepository.createShopListRepository(shopList);
@@ -28,6 +37,7 @@ exports.updateShopListService = async (shopListId, shopList) => {
         }
    
     } catch (error) {
+        console.error("Error on update: ", error)
         throw new Error("Error");
     }
 };
@@ -36,6 +46,7 @@ exports.deleteShopListService = async (shopListId) => {
     try {
         await shopListRepository.deleteShopListRepository(shopListId);
     } catch (error) {
+        console.error("Error when deleting a shop list: ", error)
         throw new Error("Error");
     }
 };

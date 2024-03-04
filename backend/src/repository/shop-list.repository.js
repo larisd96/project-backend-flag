@@ -8,7 +8,7 @@ exports.getAllItemsRepository = async () => {
   try {
     await dbConfig.sync();
     const result = await shopListModel.findAll({
-      include: "shopListItem",
+      include: "shopListItems",
     });
 
     return result;
@@ -24,7 +24,7 @@ exports.getItem = async (shopListId) => {
       where: {
         id: shopListId,
       },
-      include: "shopListItem",
+      include: "shopListItems",
     });
     return result;
   } catch (error) {
@@ -42,15 +42,17 @@ exports.createShopListRepository = async (shopList) => {
         title: shopList.title,
         description: shopList.description,
       },
-      transaction
+      {transaction}
     );
-    await shopListItemModel.bulkCreate(
-      shopList.shopListItems.map((item) => ({
-        ...item,
-        shopListId: id,
-      })),
-      { transaction }
-    );
+    if (shopList.shopListItems?.length){
+      await shopListItemModel.bulkCreate(
+        shopList.shopListItems.map((item) => ({...item,
+          shopListId: id,
+        })),
+        { transaction }
+      );
+    }
+    
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();
@@ -79,7 +81,7 @@ exports.updateShopListRepository = async (shopListId, shopListUpdate) => {
     );
 
     if (shopListUpdate?.shopListItems?.length) {
-      for (const shopListItem of shopListUpdate.shopListItem) {
+      for (const shopListItem of shopListUpdate.shopListItems) {
         [updatedShopListItemCount] = await shopListItemModel.update(
           {
             title: shopListItem.title,
@@ -117,12 +119,12 @@ exports.deleteShopListRepository = async (shopListId) => {
     await dbConfig.sync();
     await shopListItemModel.destroy({
       where: {
-        id: shopListId,
+        shopListId: shopListId,
       },
       transaction,
     });
 
-    const deletedShopListCount = await shopListItemModel.destroy({
+    const deletedShopListCount = await shopListModel.destroy({
       where: {
         id: shopListId,
       },
@@ -130,12 +132,10 @@ exports.deleteShopListRepository = async (shopListId) => {
     });
 
     if (deletedShopListCount === 0) {
-      throw new Error("Shop List Not Found");
+      throw new Error("list not found");
     }
     await transaction.commit();
-    return {
-      sucess: true,
-    };
+
   } catch (error) {
     await transaction.rollback();
     throw error;
