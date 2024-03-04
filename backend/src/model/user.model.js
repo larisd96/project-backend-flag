@@ -1,18 +1,30 @@
 const { DataTypes } = require("sequelize");
 const { dbConfig } = require("../config/data-base.config");
 
-exports.userModel = dbConfig.define ("ihomeusers",{
-name: {
+exports.UserModel = dbConfig.define("users", {
+  id: {
+    type: DataTypes.UUID,
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4,
+  },
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
-},
-email:{
+  },
+  password: {
     type: DataTypes.STRING,
-    allowNull: true,
-},
-password: {
+    allowNull: false,
+  },
+  email: {
     type: DataTypes.STRING,
-    allowNull: false
-  }
-
+    allowNull: false,
+  },
+  created_at: {
+    type: DataTypes.DATEONLY,
+    defaultValue: DataTypes.NOW,
+  },
+  updated_at: {
+    type: DataTypes.DATEONLY,
+    defaultValue: DataTypes.NOW,
+  },
 });

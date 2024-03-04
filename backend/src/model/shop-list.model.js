@@ -20,6 +20,14 @@ const shopListModel = dbConfig.define("shopLists", {
     defaultValue: "IN_PROGRESS",
     allowNull: null,
   },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+  },
+  createdBy: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   created_at: {
     type: DataTypes.DATEONLY,
     defaultValue: new Date(),

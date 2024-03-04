@@ -4,12 +4,11 @@ const {
   shopListItemModel,
 } = require("../model/shop-list.model");
 
-exports.getAllItemsRepository = async () => {
+exports.getAllItemsRepository = async (userInfo) => {
   try {
     await dbConfig.sync();
-    const result = await shopListModel.findAll({
-      include: "shopListItems",
-    });
+    const result = await shopListModel.findAll({ where: { userId: userInfo.userId },
+      include: "shopListItems",});
 
     return result;
   } catch (error) {
@@ -17,12 +16,13 @@ exports.getAllItemsRepository = async () => {
   }
 };
 
-exports.getItem = async (shopListId) => {
+exports.getItem = async (shopListId, userInfo) => {
   try {
     await dbConfig.sync();
     const result = await shopListModel.findOne({
       where: {
         id: shopListId,
+        userId: userInfo.userId
       },
       include: "shopListItems",
     });
@@ -32,16 +32,14 @@ exports.getItem = async (shopListId) => {
   }
 };
 
-exports.createShopListRepository = async (shopList) => {
+exports.createShopListRepository = async (shopList, userInfo) => {
   const transaction = await dbConfig.transaction();
 
   try {
     await dbConfig.sync();
     const { id } = await shopListModel.create(
       {
-        title: shopList.title,
-        description: shopList.description,
-      },
+        title: shopList.title, description: shopList.description, userId: userInfo.userId, createdBy: userInfo.name },
       {transaction}
     );
     if (shopList.shopListItems?.length){
@@ -60,7 +58,7 @@ exports.createShopListRepository = async (shopList) => {
   }
 };
 
-exports.updateShopListRepository = async (shopListId, shopListUpdate) => {
+exports.updateShopListRepository = async (shopListId, shopListUpdate, userInfo) => {
   const transaction = await dbConfig.transaction();
 
   try {
@@ -75,6 +73,7 @@ exports.updateShopListRepository = async (shopListId, shopListUpdate) => {
       {
         where: {
           id: shopListId,
+          userId: userInfo.userId
         },
         transaction,
       }
@@ -104,7 +103,7 @@ exports.updateShopListRepository = async (shopListId, shopListUpdate) => {
 
     await transaction.commit();
     return {
-      sucess: true,
+      success: true,
     };
   } catch (error) {
     await transaction.rollback();
@@ -112,7 +111,7 @@ exports.updateShopListRepository = async (shopListId, shopListUpdate) => {
   }
 };
 
-exports.deleteShopListRepository = async (shopListId) => {
+exports.deleteShopListRepository = async (shopListId, userInfo) => {
   const transaction = await dbConfig.transaction();
 
   try {
@@ -127,6 +126,7 @@ exports.deleteShopListRepository = async (shopListId) => {
     const deletedShopListCount = await shopListModel.destroy({
       where: {
         id: shopListId,
+        userId: userInfo.userId
       },
       transaction,
     });
