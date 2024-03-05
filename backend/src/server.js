@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const cors = require('cors');
 const { testConnection } = require("./config/data-base.config");
 const shopList = require("./routes/shop-list.route");
 const authRouter = require("./routes/auth.route");
@@ -7,6 +8,13 @@ const authRouter = require("./routes/auth.route");
 const app = express();
 const port = 8080;
 
+const corsOptions = {
+    origin: "http://localhost:3000",
+    optionsSuccessStatus: 200,
+    credentials: true
+  };
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())

@@ -8,9 +8,9 @@ const navbarItems = [
 
 const Navbar = () => {
 	return (
-		<nav class='block haver: text-gray-300'>
+		<nav class='block haver: text-cyan-800 mb-3'>
 			{navbarItems.map(value => (
-				<Link className='nav-bar-item' key={value.name} to={value.path}>
+				<Link className='m-2 text-xl font-bold' key={value.name} to={value.path}>
 					{value.name}
 				</Link>
 			))}
