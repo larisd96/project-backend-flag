@@ -1,12 +1,20 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from "react-router-dom";
 import { ihomeApi } from '../../api';
 
 const UserRegistration = () => {
+  const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
 
   const onSubmit = async (data) => {
+  try {
     await ihomeApi.post("/login/register", data)
+    navigate("/login");
+  } catch (error) {
+    alert("error to register new user", error.message)
+    
+  } 
     
   };
 

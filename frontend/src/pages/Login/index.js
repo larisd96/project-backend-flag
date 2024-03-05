@@ -1,23 +1,22 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from "react-router-dom";
 import { ihomeApi } from '../../api';
 
 const Login = () => {
+  const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm();
 
+
   const onSubmit = async (data) => {
-    // const header = {
-    //     'Content-Type': 'application/json'
-    //   };
-    await ihomeApi.post("/login", data, { withCredentials: true })
-    // if (res.status === 200) {
-    //     console.log(res.headers)
-    //     const cookie = res.headers['set-cookie'];
-    //     if (cookie) {
-    //       document.cookie = cookie; // Setting the cookie in the browser
-    //     }
-    // }
-    console.log(data);
+    try { 
+      
+      await ihomeApi.post("/login", data, { withCredentials: true })
+      navigate("/")
+    } catch (error) {
+      alert("error to login", error.message)
+      
+    }
   
   };
 
