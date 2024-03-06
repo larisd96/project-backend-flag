@@ -1,36 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import {ihomeApi} from '../../api';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Login from '../Login';
 
 const Home = () => {
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await ihomeApi.get('/shop-list');
-                setData(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-
-    }, []);
-
     return (
-        <div className="container">
-            <h1>Olá</h1>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <div>
-                    <h1>Dashboard</h1>
-                </div>
-            )}
+        <div className="container mx-auto px-4 py-8 flex flex-col items-center">
+            <h1 className="text-3xl font-semibold text-center mb-8"> WELCOME IHOME</h1>
+            <div className="w-full md:w-3/4 lg:w-1/2 bg-white rounded-lg shadow-lg p-6">
+                <Login />
+            </div>
+            <footer className="mt-8 text-gray-500 text-sm text-center">
+                &copy; 2024 MyApp. Todos os direitos reservados.
+            </footer>
         </div>
     );
 }

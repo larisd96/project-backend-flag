@@ -7,17 +7,17 @@ const Login = () => {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-
   const onSubmit = async (data) => {
     try { 
-      
       await ihomeApi.post("/login", data, { withCredentials: true })
       navigate("/")
     } catch (error) {
       alert("error to login", error.message)
-      
     }
-  
+  };
+
+  const handleUserRegistrationClick = () => {
+    navigate("/user-registration");
   };
 
   return (
@@ -35,7 +35,8 @@ const Login = () => {
             <input type="password" id="password" {...register('password', { required: true })} className="border border-gray-300 px-3 py-2 rounded w-full focus:outline-none focus:border-blue-500" />
             {errors.password && <span className="text-red-500">Password is required</span>}
           </div>
-          <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Login</button>
+          <button type="submit" className="bg-blue-500 text-white py-2 px-4 hover:bg-blue-600 focus:outline-none focus:bg-blue-600 rounded mr-2">Login</button>
+          <button type="button" onClick={handleUserRegistrationClick} className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:bg-green-600">Create User</button>
         </form>
       </div>
     </div>
