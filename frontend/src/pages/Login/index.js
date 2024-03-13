@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
 import { ihomeApi } from '../../api';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,6 +11,9 @@ const Login = () => {
   const onSubmit = async (data) => {
     try { 
       await ihomeApi.post("/login", data, { withCredentials: true })
+      const authToken = Cookies.get("access_token");
+
+      console.log("login token", authToken)
       navigate("/")
     } catch (error) {
       alert("error to login", error.message)

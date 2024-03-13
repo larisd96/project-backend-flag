@@ -3,7 +3,7 @@ const service = require("../../services/auth.service");
 exports.authentication = async (req, res) => {
   try {
     const auth = await service.authenticationService(req.body);
-    res.cookie("access_token", auth, { httpOnly: true, maxAge: 3600000 });
+    res.cookie("access_token", auth, { maxAge: 3600000 });
     res.status(200).send("Login success");
   } catch (error) {
     res.status(400).send(error.message);
