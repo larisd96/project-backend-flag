@@ -1,49 +1,80 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
+import { ihomeApi } from "../../../api";
+import { useState } from "react";
 
-const ShopListItem = ({ item }) => {
-    return (
-        <tr className="hover:bg-gray-100">
-            <td className="py-4 px-6 border-b">{item.name}</td>
-            <td className="py-4 px-6 border-b">{item.quantity}</td>
-            <td className="py-4 px-6 border-b">
-                <input type="checkbox" checked={item.completed} readOnly />
-            </td>
-        </tr>
-    );
-};
+const ShopListItems = ({ items }) => {
+  const [shopList, setShopList] = useState(items);
 
-const ShopListItems = ({ lists }) => {
-    const { listName } = useParams();
-    const list = lists.find(list => list.name === decodeURIComponent(listName));
+  const navigate = useNavigate();
 
-    if (!list) {
-        return <div className="text-center text-red-600 text-lg mt-8">List not found</div>;
+const editShopListStatus = async (id) => {
+  try {
+    await ihomeApi.put(`/shop-list/${id}`, {status:"COMPLETE"}, {withCredentials:true})
+    const filterShopList = shopList.filter(item => item.id === id )
+    filterShopList.status = "COMPLETE"
+    setShopList(filterShopList)
+  } catch (error) {
+    alert("failed to change the status")
+  }
+} 
+
+  const deleteShopList = async (id) => {
+    try {
+      await ihomeApi.delete(`/shop-list/${id}`, { withCredentials: true });
+
+      setShopList(shopList.filter((item) => item.id !== id));
+    } catch (error) {
+      alert("failed to delete shop list.");
     }
+  };
 
-    return (
-        <div className="container mx-auto mt-8 sm:w-full">
-            <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                <div className="p-6">
-                    <h2 className="text-3xl font-semibold mb-4 text-center">Items List: {list.name}</h2>
-                    <table className="w-full">
-                        <thead className="bg-gray-200 text-gray-600 uppercase">
-                            <tr>
-                                <th className="py-3 px-6 text-left">Item</th>
-                                <th className="py-3 px-6 text-left">Quantity</th>
-                                <th className="py-3 px-6 text-left">Completed</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-gray-600">
-                            {list.items.map((item, index) => (
-                                <ShopListItem key={index} item={item} />
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+  return (
+    <div className="flex flex-box justify-between">
+      <button
+        className="border border-black border-solid rounded p-3 m-2"
+        onClick={() => navigate("/shop-list/create")}
+      >
+        Create a new list
+      </button>
+      {shopList.length ? (
+        <ul className="w-full">
+          {shopList.map((item) => (
+            <li
+              className="border border-black border-solid rounded p-3 m-2 w-full"
+              key={item.id}
+            >
+              <span className="m-5">{item.title}</span>
+              <button
+                onClick={() => navigate(`/shop-list/${item.id}/edit`)}
+                className="m-3"
+              >
+                <FaEdit />
+              </button>
+              <button  onClick={() => editShopListStatus(item.id)}   className={`m-3 ${item.status === 'COMPLETE' ? 'bg-green-500' : 'bg-blue-500'}`}>
+                <FaCheckCircle />
+              </button>
+              <button onClick={() => deleteShopList(item.id)} className="m-3">
+                <FaTrash />
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div>
+          <h2>You dont have any shop list</h2>
+          <button
+            className="border border-black border-solid rounded p-3 m-2"
+            onClick={() => navigate("/shop-list/create")}
+          >
+            Create a new list
+          </button>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default ShopListItems;
