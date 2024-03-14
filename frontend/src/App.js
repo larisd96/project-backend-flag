@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Cookies from "js-cookie";
 import ShopList from "./pages/ShopList";
 import Dashboard from "./pages/Dashboard";
 import UserRegistration from "./pages/UserRegistration";
 import Login from "./pages/Login";
 import Navbar from "./components/NavBar";
 import Logout from "./pages/Logout";
-import ShopListItems from "./pages/ShopList/ShopListItems";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import ShopListCreate from "./pages/ShopList/ShopListCreate";
 
@@ -23,6 +21,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/shop-list" element={<ShopList />} />
             <Route path="/shop-list/create" element={<ShopListCreate />} />
+            <Route path="/shop-list/:id/edit" element={<ShopListCreate />} />
           </Route>
           <Route path="/user-registration" element={<UserRegistration />} />
           <Route path="/login" element={<Login />} />

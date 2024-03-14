@@ -7,8 +7,10 @@ const {
 exports.getAllItemsRepository = async (userInfo) => {
   try {
     await dbConfig.sync();
-    const result = await shopListModel.findAll({ where: { userId: userInfo.userId },
-      include: "shopListItems",});
+    const result = await shopListModel.findAll({
+      where: { userId: userInfo.userId },
+      include: "shopListItems",
+    });
 
     return result;
   } catch (error) {
@@ -22,7 +24,7 @@ exports.getItem = async (shopListId, userInfo) => {
     const result = await shopListModel.findOne({
       where: {
         id: shopListId,
-        userId: userInfo.userId
+        userId: userInfo.userId,
       },
       include: "shopListItems",
     });
@@ -39,18 +41,19 @@ exports.createShopListRepository = async (shopList, userInfo) => {
     await dbConfig.sync();
     const { id } = await shopListModel.create(
       {
-        title: shopList.title, description: shopList.description, userId: userInfo.userId, createdBy: userInfo.name },
-      {transaction}
+        title: shopList.title,
+        description: shopList.description,
+        userId: userInfo.userId,
+        createdBy: userInfo.name,
+      },
+      { transaction }
     );
-    if (shopList.shopListItems?.length){
+    if (shopList.shopListItems?.length) {
       await shopListItemModel.bulkCreate(
-        shopList.shopListItems.map((item) => ({...item,
-          shopListId: id,
-        })),
+        shopList.shopListItems.map((item) => ({ ...item, shopListId: id })),
         { transaction }
       );
     }
-    
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();
@@ -58,13 +61,16 @@ exports.createShopListRepository = async (shopList, userInfo) => {
   }
 };
 
-exports.updateShopListRepository = async (shopListId, shopListUpdate, userInfo) => {
+exports.updateShopListRepository = async (
+  shopListId,
+  shopListUpdate,
+  userInfo
+) => {
   const transaction = await dbConfig.transaction();
 
   try {
     await dbConfig.sync();
-    let updatedShopListItemCount;
-    const [updatedShopListCount] = await shopListModel.update(
+    await shopListModel.update(
       {
         title: shopListUpdate.title,
         description: shopListUpdate.description,
@@ -73,33 +79,30 @@ exports.updateShopListRepository = async (shopListId, shopListUpdate, userInfo) 
       {
         where: {
           id: shopListId,
-          userId: userInfo.userId
+          userId: userInfo.userId,
         },
         transaction,
       }
     );
-
     if (shopListUpdate?.shopListItems?.length) {
-      for (const shopListItem of shopListUpdate.shopListItems) {
-        [updatedShopListItemCount] = await shopListItemModel.update(
-          {
-            title: shopListItem.title,
-            quantity: shopListItem.quantity,
-          },
-          {
-            where: {
-              id: shopListItem.id,
-              shopListId: shopListId,
-            },
-            transaction,
-          }
-        );
-      }
+      const itemsToInsert = shopListUpdate?.shopListItems.filter(
+        (item) => !item.id
+      );
+      await shopListItemModel.bulkCreate(
+        itemsToInsert.map((item) => ({ ...item, shopListId })),
+        { transaction }
+      );
     }
 
-    if (updatedShopListCount === 0 && updatedShopListItemCount === 0) {
-      throw new Error("Nothing to update");
+    if (shopListUpdate?.shopListItemsIds?.length) {
+      await shopListItemModel.destroy({
+        where: {
+          id: shopListUpdate.shopListItemsIds,
+        },
+        transaction,
+      });
     }
+
 
     await transaction.commit();
     return {
@@ -126,7 +129,7 @@ exports.deleteShopListRepository = async (shopListId, userInfo) => {
     const deletedShopListCount = await shopListModel.destroy({
       where: {
         id: shopListId,
-        userId: userInfo.userId
+        userId: userInfo.userId,
       },
       transaction,
     });
@@ -135,7 +138,6 @@ exports.deleteShopListRepository = async (shopListId, userInfo) => {
       throw new Error("list not found");
     }
     await transaction.commit();
-
   } catch (error) {
     await transaction.rollback();
     throw error;

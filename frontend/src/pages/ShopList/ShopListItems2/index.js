@@ -16,7 +16,7 @@ const ShopListItems2 = ({ items }) => {
           {items.map((item) => (
             <li className="border border-black border-solid rounded p-3 m-2 w-full" key={item.id}>
             <span className="m-5">{item.title}</span>
-            <button className="m-3"><FaEdit/></button>
+            <button onClick={() => navigate(`/shop-list/${item.id}/edit`)} className="m-3"><FaEdit/></button>
             <button className="m-3"><FaCheckCircle/></button>
             <button className="m-3"><FaTrash/></button>
             </li>

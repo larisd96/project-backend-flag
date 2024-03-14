@@ -2,12 +2,14 @@ import { useForm } from "react-hook-form";
 import { FaTrash } from "react-icons/fa";
 
 import { ihomeApi } from "../../../api";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const ShopListCreate = () => {
   const [listItem, setListItem] = useState([]);
+  const [listItemDelete, setListItemDelete] = useState([]);
   const navigate = useNavigate();
+  const { id } = useParams();
   const {
     register,
     handleSubmit,
@@ -17,18 +19,45 @@ const ShopListCreate = () => {
     getValues,
   } = useForm();
 
+  useEffect(() => {
+    const getShopList = async (id) => {
+      const result = await ihomeApi.get(`/shop-list/${id}`, {
+        withCredentials: true,
+      });
+      setValue("title", result.data.title);
+      setValue("description", result.data.description);
+      setListItem(result.data.shopListItems);
+    };
+    if (id) {
+      getShopList(id);
+    }
+  }, [id]);
   const onSubmit = async (data) => {
     const shopList = {
       description: data.description,
       title: data.title,
       shopListItems: listItem,
     };
+    if (id) {
+      if (listItemDelete.length) {
+        shopList.shopListItemsIds = listItemDelete;
+      }
 
-    try {
-      await ihomeApi.post("/shop-list", shopList, { withCredentials: true });
-      navigate("/shop-list");
-    } catch (error) {
-      alert("Error to create new list", error.message);
+      try {
+        await ihomeApi.put(`/shop-list/${id}`, shopList, {
+          withCredentials: true,
+        });
+        navigate("/shop-list");
+      } catch (error) {
+        alert("Error to update new list", error.message);
+      }
+    } else {
+      try {
+        await ihomeApi.post("/shop-list", shopList, { withCredentials: true });
+        navigate("/shop-list");
+      } catch (error) {
+        alert("Error to create new list", error.message);
+      }
     }
   };
 
@@ -46,6 +75,12 @@ const ShopListCreate = () => {
   };
 
   const removeListItem = (item) => {
+    if (id) {
+      const deleteListItem = listItem.filter((_, index) => index === item);
+      const deleteListItemIds = deleteListItem.map(item => item.id);
+      
+      setListItemDelete(deleteListItemIds)
+    }
     const filterList = listItem.filter((_, index) => index !== item);
     setListItem(filterList);
   };
@@ -145,7 +180,14 @@ const ShopListCreate = () => {
           type="submit"
           className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
         >
-          Create new List
+          Conclude
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/shop-list")}
+          className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 focus:outline-none focus:bg-red-600"
+        >
+          Cancel
         </button>
       </form>
     </div>
@@ -153,3 +195,4 @@ const ShopListCreate = () => {
 };
 
 export default ShopListCreate;
+
