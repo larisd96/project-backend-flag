@@ -15,9 +15,13 @@ const ShopListItems = ({ items }) => {
         { status: "COMPLETE" },
         { withCredentials: true }
       );
-      const filterShopList = shopList.filter((item) => item.id === id);
-      filterShopList.status = "COMPLETE";
-      setShopList(filterShopList);
+      shopList.forEach((item, index) => {
+        if (item.id === id) {
+          shopList[index].status = "COMPLETE"
+        }
+      });
+      
+      setShopList(shopList);
     } catch (error) {
       alert("failed to change the status");
     }
@@ -62,7 +66,7 @@ const ShopListItems = ({ items }) => {
                     className={`size-5 ${
                       item.status === "COMPLETE"
                         ? "text-green-600"
-                        : "text-green-300"
+                        : "text-gray-300"
                     }`}
                   />
                 </button>

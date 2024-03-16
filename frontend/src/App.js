@@ -30,6 +30,9 @@ function App() {
           <Route path="/logout" element={<Logout />} />
         </Routes>
       </section>
+      <footer className="mt-8 text-gray-500 text-sm text-center">
+                &copy; 2024 iHome. Todos os direitos reservados.
+      </footer>
     </main>
   );
 }
