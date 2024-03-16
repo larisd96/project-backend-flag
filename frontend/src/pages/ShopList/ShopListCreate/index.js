@@ -14,7 +14,6 @@ const ShopListCreate = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
     setValue,
     getValues,
   } = useForm();
@@ -157,7 +156,6 @@ const ShopListCreate = () => {
             </button>
           </div>
         </div>
-
         <ul className="border border-black border-solid rounded p-3 m-2">
           {listItem.map((item, index) => (
             <li key={index} className="flex">
@@ -178,7 +176,7 @@ const ShopListCreate = () => {
 
         <button
           type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+          className="bg-blue-500 text-white py-2 px-4 me-5 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
         >
           Conclude
         </button>

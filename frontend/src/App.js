@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ShopList from "./pages/ShopList";
+import ShopListDetail from "./pages/ShopList/ShopListDetail";
 import Dashboard from "./pages/Dashboard";
 import UserRegistration from "./pages/UserRegistration";
 import Login from "./pages/Login";
@@ -20,6 +21,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/shop-list" element={<ShopList />} />
+            <Route path="/shop-list/:id" element={<ShopListDetail />} />
             <Route path="/shop-list/create" element={<ShopListCreate />} />
             <Route path="/shop-list/:id/edit" element={<ShopListCreate />} />
           </Route>
