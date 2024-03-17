@@ -35,11 +35,11 @@ const Home = () => {
       ) : (
         <>
           {list.length ? (
-            <div className="flex flex-col mt-8">
+            <div className="flex flex-col mt-8 border border-black border-solid rounded p-12">
               <h2 className="text-lg font-bold">Last Shop List:</h2>
               <div>
                 <h2 className="font-bold mx-2">{list[0].title}</h2>
-                <h2 className="font-bold mx-2 mb-2">{list[0].description}</h2>
+                <h2 className="font-bold mx-2 mb-4">{list[0].description}</h2>
                 <button
                   onClick={() => navigate(`/shop-list/${list[0].id}`)}
                   className="bg-blue-400 rounded py-1 px-2 text-white"

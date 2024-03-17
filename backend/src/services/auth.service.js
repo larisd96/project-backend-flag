@@ -14,6 +14,10 @@ exports.authenticationService = async (data) => {
     const user = await repository.getUserByEmail(email);
     const validPassword = await bcrypt.compare(password, user.password);
 
+    if(!validPassword) {
+      throw new Error("Invalid password")
+    }
+
     if (user && validPassword) {
       return generateToken(user);
     }

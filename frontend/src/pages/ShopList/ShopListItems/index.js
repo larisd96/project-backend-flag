@@ -9,21 +9,29 @@ const ShopListItems = ({ items }) => {
   const navigate = useNavigate();
 
   const editShopListStatus = async (id) => {
+
     try {
+      const list = shopList.find(item => item.id === id)
+
       await ihomeApi.put(
         `/shop-list/${id}`,
-        { status: "COMPLETE" },
+        { status: list.status === "COMPLETE" ? "IN_PROGRESS" : "COMPLETE"},
         { withCredentials: true }
       );
-      shopList.forEach((item, index) => {
+
+      const updatedShopList = shopList.map(item => {
         if (item.id === id) {
-          shopList[index].status = "COMPLETE"
+          return {
+            ...item,
+            status: item.status === "COMPLETE" ? "IN_PROGRESS" : "COMPLETE"
+          };
         }
+        return item;
       });
       
-      setShopList(shopList);
+      setShopList(updatedShopList);
     } catch (error) {
-      alert("failed to change the status");
+      alert("Failed to change the status");
     }
   };
 
@@ -33,7 +41,7 @@ const ShopListItems = ({ items }) => {
 
       setShopList(shopList.filter((item) => item.id !== id));
     } catch (error) {
-      alert("failed to delete shop list.");
+      alert("Failed to delete shop list.");
     }
   };
 

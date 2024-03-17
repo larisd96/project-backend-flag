@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ihomeApi } from '../../api';
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -11,13 +12,21 @@ const Logout = () => {
   };
 
   React.useEffect(() => {
-    handleLogout();
+    const doLogout = async() => {
+      try {
+        await ihomeApi.get("/login/logout", { withCredentials: true })
+        handleLogout();
+
+      } catch (error) {
+        alert("Failed to logout")
+      }
+    } 
+    doLogout()
   }, []);
 
   return (
     <div>
       <p>Fazendo logout...</p>
-      {/* Se desejar, você pode adicionar uma mensagem de confirmação ou um spinner de carregamento aqui */}
     </div>
   );
 };
