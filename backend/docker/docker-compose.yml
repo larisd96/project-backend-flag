@@ -13,9 +13,9 @@ services:
       # Password for root access
       MYSQL_ROOT_PASSWORD: "password"
     ports:
-      - "5432:5432"
+      - "3306:3306"
     expose:
-      - "5432"
+      - "3306"
     volumes:
       - my-db:/var/lib/mysql
 volumes:

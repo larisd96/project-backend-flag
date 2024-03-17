@@ -92,10 +92,10 @@ const ShopListItems = ({ items }) => {
           </button>
         </div>
       ) : (
-        <div>
+        <div className="flex flex-col m-auto">
           <h2>You dont have any shop list</h2>
           <button
-            className="border border-black border-solid rounded p-3 m-2"
+            className="border border-black border-solid rounded p-3 m-2 bg-blue-700"
             onClick={() => navigate("/shop-list/create")}
           >
             Create a new list
