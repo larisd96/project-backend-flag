@@ -8,11 +8,11 @@ A aplicação de listas de compras permite aos utilizadores criar e gerir as sua
 
 ### Configuração do .env 
 
-- MYSQL_DATABASE: (dbihome).
-- MYSQL_USER: (user).
-- MYSQL_PASSWORD: (password).
-- MYSQL_ROOT_PASSWORD: (password).
-- MYSQL_PORT:(3306).
+- MYSQL_DATABASE=dbihome
+- MYSQL_USER=user
+- MYSQL_PASSWORD= password
+- MYSQL_ROOT_PASSWORD= password
+- MYSQL_PORT=3306
 
 ## Instruções para Executar a Aplicação
 
