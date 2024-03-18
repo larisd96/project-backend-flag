@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require('cors');
+require('dotenv').config();
 const { testConnection } = require("./config/data-base.config");
 const shopList = require("./routes/shop-list.route");
 const authRouter = require("./routes/auth.route");
@@ -8,8 +9,9 @@ const authRouter = require("./routes/auth.route");
 const app = express();
 const port = 8080;
 
+const clientUrl =  process.env.CLIENT_ORIGIN_URL || "http://localhost:3000"
 const corsOptions = {
-    origin: process.env.CLIENT_ORIGIN_URL || "http://localhost:3000",
+    origin: clientUrl,
     optionsSuccessStatus: 200,
     credentials: true
   };
