@@ -7,7 +7,7 @@ const shopList = require("./routes/shop-list.route");
 const authRouter = require("./routes/auth.route");
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080 ; 
 
 const clientUrl =  process.env.CLIENT_ORIGIN_URL || "http://localhost:3000"
 console.log("test---",clientUrl)
