@@ -10,10 +10,10 @@ const app = express();
 const port = 8080;
 
 const clientUrl =  process.env.CLIENT_ORIGIN_URL || "http://localhost:3000"
+console.log("test---",clientUrl)
 const corsOptions = {
     origin: clientUrl,
-    optionsSuccessStatus: 200,
-    credentials: true
+    optionsSuccessStatus: 200, 
   };
 
 app.use(cors(corsOptions));
